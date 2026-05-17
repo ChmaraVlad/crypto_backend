@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Alert;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -16,16 +18,16 @@ class DatabaseSeeder extends Seeder
         $this->call(CoinsSeeder::class);
 
         // 2. Тестовый пользователь с известными кредами для разработки
-        User::factory()->create([
+        $testUser = User::factory()->create([
             'name'  => 'Test User',
             'email' => 'test@example.com',
         ]);
 
         // 3. Ещё 4 случайных пользователя
-        User::factory(4)->create();
+        $users    = User::factory(4)->create();
         $allUsers = $users->push($testUser);
-        
-        // Транзакції для кожного юзера
+
+        // 4. Транзакции и алерты для каждого пользователя
         $allUsers->each(function ($user) {
             Transaction::factory(rand(5, 15))->create(['user_id' => $user->id]);
             Alert::factory(rand(1, 5))->create(['user_id' => $user->id]);
